@@ -1,0 +1,65 @@
+# Miscellaneous
+*.log
+*.sqlite
+*.class
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# Environment variables
+.env
+auth.env
+*.env
+
+# Android related
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/key.properties
+*.keystore
+*.jks
+
+# iOS/macOS related
+**/ios/Flutter/.last_build_id
+/ios/Flutter/Generated.xcconfig
+/ios/Flutter/flutter_export_environment.sh
+/ios/Flutter/Ephemera.podspec
+/ios/Runner/Generated.xcconfig
+/ios/.external_build_artifacts
+
+# Flutter/Dart/Pub related
+**/doc/api/
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# IDE related
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Symbolication & Obfuscation
+app.*.symbols
+app.*.map.json
+
+.venv/
+best_buyer_model_randomforest.joblib
+
+best_buyer_model_randomforest.joblib
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+android/.gradle/

@@ -1,0 +1,56 @@
+name: cropsecure_app
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  pytorch_lite: ^1.0.1
+  image_picker: ^1.0.0
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^3.3.1
+  go_router: ^17.1.0
+  google_fonts: ^8.0.2
+  shared_preferences: ^2.5.4
+  get_it: ^9.2.1
+  provider: ^6.1.5+1
+  mongo_dart: ^0.10.3
+  flutter_dotenv: ^5.2.1
+  camera: ^0.12.0+1
+  intl: ^0.20.2
+  cached_network_image: ^3.4.1
+  http: ^1.2.0
+  tflite_flutter: ^0.12.1
+  image: ^4.1.3
+  geolocator: ^13.0.1
+  firebase_core: ^4.7.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/model.tflite
+    - assets/leaf_model.pt
+    - assets/class_names.txt
+    - .env
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/cropped-logo.jpg"
+  min_sdk_size: 21

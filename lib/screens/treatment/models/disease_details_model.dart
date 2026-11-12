@@ -1,0 +1,215 @@
+import 'package:flutter/material.dart';
+
+class DiseaseDetailsModel {
+  final String id;
+  final String cropAffected;
+  final String diseaseName;
+  final String diseaseType;
+  final String causalOrganism;
+  final String scientificName;
+  final List<String> stages;
+  final List<String> images;
+  final List<DiseaseSymptomModel> symptoms;
+  final List<String> causes;
+  final List<DiseaseTreatmentModel> organicTreatments;
+  final List<DiseaseTreatmentModel> chemicalTreatments;
+  final List<String> preventiveMeasures;
+  final String description;
+  final String affectedPart;
+  final String primarySpread;
+  final String severityLevel;
+  final List<FavourableConditionModel> favourableConditions;
+  final List<IdentifyStageModel> identifyStages;
+
+  DiseaseDetailsModel({
+    required this.id,
+    required this.cropAffected,
+    required this.diseaseName,
+    required this.diseaseType,
+    required this.causalOrganism,
+    required this.scientificName,
+    required this.stages,
+    required this.images,
+    required this.symptoms,
+    required this.causes,
+    required this.organicTreatments,
+    required this.chemicalTreatments,
+    required this.preventiveMeasures,
+    this.description = '',
+    this.affectedPart = '',
+    this.primarySpread = '',
+    this.severityLevel = '',
+    this.favourableConditions = const [],
+    this.identifyStages = const [],
+  });
+
+  factory DiseaseDetailsModel.fromJson(Map<String, dynamic>? jsonInput, String documentId) {
+    final json = jsonInput ?? {};
+    List<String> parsedStages = [];
+    final rawStages = json['stages'] ?? json['stage'];
+    if (rawStages is List) {
+      parsedStages = List<String>.from(rawStages);
+    } else if (rawStages is String) {
+      parsedStages = [rawStages];
+    }
+
+    return DiseaseDetailsModel(
+      id: documentId,
+      cropAffected: json['cropAffected'] as String? ?? '',
+      diseaseName: json['diseaseName'] as String? ?? '',
+      diseaseType: json['diseaseType'] as String? ?? '',
+      causalOrganism: json['causalOrganism'] as String? ?? '',
+      scientificName: json['scientificName'] as String? ?? '',
+      stages: parsedStages,
+      images: json['images'] != null ? List<String>.from(json['images'] as Iterable) : [],
+      causes: json['causes'] != null ? List<String>.from(json['causes'] as Iterable) : [],
+      preventiveMeasures: json['preventiveMeasures'] != null ? List<String>.from(json['preventiveMeasures'] as Iterable) : [],
+      symptoms: json['symptoms'] != null 
+          ? (json['symptoms'] as List).map((i) => DiseaseSymptomModel.fromJson(i as Map<String, dynamic>? ?? {})).toList() 
+          : [],
+      organicTreatments: json['organicTreatments'] != null 
+          ? (json['organicTreatments'] as List).map((i) => DiseaseTreatmentModel.fromJson(i as Map<String, dynamic>? ?? {})).toList() 
+          : [],
+      chemicalTreatments: json['chemicalTreatments'] != null 
+          ? (json['chemicalTreatments'] as List).map((i) => DiseaseTreatmentModel.fromJson(i as Map<String, dynamic>? ?? {})).toList() 
+          : [],
+      description: json['description'] as String? ?? '',
+      affectedPart: json['affectedPart'] as String? ?? '',
+      primarySpread: json['primarySpread'] as String? ?? '',
+      severityLevel: json['severityLevel'] as String? ?? '',
+      favourableConditions: json['favourableConditions'] != null
+          ? (json['favourableConditions'] as List).map((i) => FavourableConditionModel.fromJson(i as Map<String, dynamic>? ?? {})).toList()
+          : [],
+      identifyStages: json['howToIdentify'] != null
+          ? (json['howToIdentify'] as List).map((i) => IdentifyStageModel.fromJson(i as Map<String, dynamic>? ?? {})).toList()
+          : [],
+    );
+  }
+}
+
+class DiseaseSymptomModel {
+  final String title;
+  final String iconName;
+  final List<String> bullets;
+
+  DiseaseSymptomModel({
+    required this.title,
+    required this.iconName,
+    required this.bullets,
+  });
+
+  factory DiseaseSymptomModel.fromJson(Map<String, dynamic> json) {
+    return DiseaseSymptomModel(
+      title: json['title'] ?? '',
+      iconName: json['iconName'] ?? '',
+      bullets: json['bullets'] != null ? List<String>.from(json['bullets']) : [],
+    );
+  }
+}
+
+class DiseaseTreatmentModel {
+  final String title;
+  final String type;
+  final String use;
+  final String dose;
+  final List<String> steps;
+  final String estimatedCost;
+  final String benefit;
+  final String repeatAfter;
+  final String bestTime;
+  final String waitingPeriod;
+  final List<String> tips;
+  final List<String> safety;
+
+  DiseaseTreatmentModel({
+    required this.title,
+    required this.type,
+    required this.use,
+    required this.dose,
+    required this.steps,
+    required this.estimatedCost,
+    required this.benefit,
+    required this.repeatAfter,
+    required this.bestTime,
+    required this.waitingPeriod,
+    required this.tips,
+    required this.safety,
+  });
+
+  factory DiseaseTreatmentModel.fromJson(Map<String, dynamic> json) {
+    return DiseaseTreatmentModel(
+      title: json['title'] ?? json['medicineName'] ?? '',
+      type: json['type'] ?? '',
+      use: json['use'] ?? '',
+      dose: json['dose'] ?? '',
+      steps: json['steps'] != null ? List<String>.from(json['steps']) : [],
+      estimatedCost: json['estimatedCost'] ?? json['price'] ?? 'N/A',
+      benefit: json['benefit'] ?? json['description'] ?? '',
+      repeatAfter: json['repeatAfter'] ?? 'Not specified',
+      bestTime: json['bestTime'] ?? 'Not specified',
+      waitingPeriod: json['waitingPeriod'] ?? 'Not specified',
+      tips: json['tips'] != null ? List<String>.from(json['tips']) : [],
+      safety: json['safety'] != null ? List<String>.from(json['safety']) : [],
+    );
+  }
+}
+
+class FavourableConditionModel {
+  final String title;
+  final String description;
+  final String iconName;
+
+  FavourableConditionModel({
+    required this.title,
+    required this.description,
+    required this.iconName,
+  });
+
+  factory FavourableConditionModel.fromJson(Map<String, dynamic> json) {
+    return FavourableConditionModel(
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+      iconName: json['iconName'] ?? '',
+    );
+  }
+
+  IconData getIcon() {
+    switch (iconName.toLowerCase()) {
+      case 'water_drop': return Icons.water_drop;
+      case 'thermostat': return Icons.thermostat;
+      case 'air': return Icons.air;
+      case 'cloudy_snowing': return Icons.cloudy_snowing;
+      default: return Icons.wb_sunny;
+    }
+  }
+
+  Color getColor() {
+    switch (iconName.toLowerCase()) {
+      case 'water_drop': return const Color(0xFFE3F2FD); // Very Light Blue
+      case 'thermostat': return const Color(0xFFFFF3E0); // Very Light Orange
+      case 'air': return const Color(0xFFF5F5F5);        // Very Light Grey
+      case 'cloudy_snowing': return const Color(0xFFE1F5FE); // Light Cyan
+      default: return Colors.blueGrey.shade50;
+    }
+  }
+}
+
+class IdentifyStageModel {
+  final int stageNumber;
+  final String title;
+  final String description;
+
+  IdentifyStageModel({
+    required this.stageNumber,
+    required this.title,
+    required this.description,
+  });
+
+  factory IdentifyStageModel.fromJson(Map<String, dynamic> json) {
+    return IdentifyStageModel(
+      stageNumber: json['stageNumber'] ?? 0,
+      title: json['title'] ?? '',
+      description: json['description'] ?? '',
+    );
+  }
+}

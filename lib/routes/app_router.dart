@@ -1,0 +1,270 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../widgets/background_scaffold.dart';
+import '../widgets/app_shell.dart';
+import '../core/theme/app_colors.dart';
+
+// Import Screens
+import '../screens/splash/splash_screen.dart';
+import '../screens/language/language_selection_screen.dart';
+import '../screens/onboarding/onboarding_screen.dart';
+import '../screens/auth/login_screen.dart';
+import '../screens/auth/signup_screen.dart';
+import '../screens/auth/otp_screen.dart';
+import '../screens/auth/farmer_registration_screen.dart';
+import '../screens/dashboard/dashboard_screen.dart';
+import '../screens/scan/scan_screen.dart';
+import '../screens/scan/scan_preview_screen.dart';
+import '../screens/scan/analyzing_screen.dart';
+import '../screens/scan/diagnosis_result_screen.dart';
+import '../screens/treatment/treatment_advisory_screen.dart';
+import '../screens/treatment/disease_details_screen.dart';
+import '../screens/treatment/models/disease_details_model.dart';
+import '../screens/treatment/chemical_treatment_screen.dart';
+import '../screens/treatment/organic_treatment_screen.dart';
+import '../screens/treatment/pests_and_diseases_screen.dart';
+import '../screens/treatment/stage_expanded_screen.dart';
+import '../screens/marketplace/marketplace_screen.dart';
+import '../screens/marketplace/search_overlay_screen.dart';
+import '../screens/marketplace/product_detail_screen.dart';
+import '../screens/marketplace/cart_screen.dart';
+import '../screens/profile/profile_screen.dart';
+import '../screens/profile/farm_history_screen.dart';
+import '../screens/profile/purchase_inputs_screen.dart';
+import '../screens/profile/plot_registration_screen.dart';
+import '../screens/profile/crop_field_registration_screen.dart';
+import '../screens/ml/prediction_form_screen.dart';
+
+final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: 'root',
+);
+final GlobalKey<NavigatorState> _mainNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: 'main',
+);
+final GlobalKey<NavigatorState> _shellNavigatorKey = GlobalKey<NavigatorState>(
+  debugLabel: 'shell',
+);
+
+/// Provides the GoRouter instance
+final routerProvider = Provider<GoRouter>((ref) {
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/splash',
+    routes: [
+      // 0. Splash (No Global Background)
+      GoRoute(
+        path: '/splash',
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SplashScreen(),
+      ),
+
+      // 1. All Other Routes Wrap with BackgroundScaffold
+      ShellRoute(
+        navigatorKey: _mainNavigatorKey,
+        builder: (context, state, child) => BackgroundScaffold(child: child),
+        routes: [
+          GoRoute(
+            path: '/language',
+            builder: (context, state) => const LanguageSelectionScreen(),
+          ),
+          GoRoute(
+            path: '/onboarding',
+            builder: (context, state) => const OnboardingScreen(),
+          ),
+          GoRoute(
+            path: '/auth/login',
+            builder: (context, state) => const LoginScreen(),
+          ),
+          GoRoute(
+            path: '/auth/signup',
+            builder: (context, state) => const SignUpScreen(),
+          ),
+          GoRoute(
+            path: '/auth/otp',
+            builder: (context, state) => const OTPScreen(),
+          ),
+          GoRoute(
+            path: '/auth/farmer-registration',
+            builder: (context, state) => const FarmerRegistrationScreen(),
+          ),
+          GoRoute(
+            path: '/home/scan',
+            builder: (context, state) => const ScanScreen(),
+            routes: [
+              GoRoute(
+                path: 'preview',
+                builder: (context, state) =>
+                    ScanPreviewScreen(imagePath: state.extra as String?),
+              ),
+              GoRoute(
+                path: 'analyzing',
+                builder: (context, state) => const AnalyzingScreen(),
+              ),
+              GoRoute(
+                path: 'result',
+                builder: (context, state) => const DiagnosisResultScreen(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: '/scan-result',
+            builder: (context, state) => const DiagnosisResultScreen(),
+          ),
+          GoRoute(
+            path: '/disease-details',
+            builder: (context, state) =>
+                DiseaseDetailsScreen(data: state.extra as DiseaseDetailsModel),
+          ),
+          GoRoute(
+            path: '/ml/jasmine-yield',
+            builder: (context, state) => const JasmineYieldScreen(),
+          ),
+          GoRoute(
+            path: '/ml/smart-irrigation',
+            builder: (context, state) => const SmartIrrigationScreen(),
+          ),
+          GoRoute(
+            path: '/ml/market-insights',
+            builder: (context, state) => const MarketInsightsScreen(),
+          ),
+
+          // Nested App Shell with Bottom Navigation
+          ShellRoute(
+            navigatorKey: _shellNavigatorKey,
+            builder: (context, state, child) {
+              return AppShell(child: child);
+            },
+            routes: [
+              // 0. Dashboard
+              GoRoute(
+                path: '/home',
+                builder: (context, state) => const DashboardScreen(),
+              ),
+
+              // 1. Treatment
+              GoRoute(
+                path: '/treatment',
+                builder: (context, state) => const TreatmentAdvisoryScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'chemical',
+                    builder: (context, state) {
+                      final data = state.extra as DiseaseTreatmentModel?;
+                      if (data == null) {
+                        return const Scaffold(
+                          backgroundColor: Colors.transparent,
+                          body: Center(child: Text('Treatment data missing.')),
+                        );
+                      }
+                      return ChemicalTreatmentScreen(data: data);
+                    },
+                  ),
+                  GoRoute(
+                    path: 'organic',
+                    builder: (context, state) {
+                      final data = state.extra as DiseaseTreatmentModel?;
+                      if (data == null) {
+                        return Scaffold(
+                          backgroundColor: Colors.transparent,
+                          appBar: AppBar(
+                            title: const Text('Error'),
+                            backgroundColor: AppColors.primaryGreen,
+                          ),
+                          body: const Center(
+                            child: Text('Treatment data missing or invalid.'),
+                          ),
+                        );
+                      }
+                      return OrganicTreatmentScreen(data: data);
+                    },
+                  ),
+                  GoRoute(
+                    path: 'pests',
+                    builder: (context, state) => const PestsAndDiseasesScreen(),
+                  ),
+                  GoRoute(
+                    path: 'stage-expanded',
+                    builder: (context, state) {
+                      final args = state.extra as Map<String, dynamic>;
+                      return StageExpandedScreen(
+                        stageTitle: args['title'] as String,
+                        diseases: args['diseases'] as List<DiseaseDetailsModel>,
+                      );
+                    },
+                  ),
+                ],
+              ),
+
+              // 2. Marketplace
+              GoRoute(
+                path: '/market',
+                builder: (context, state) => const MarketplaceScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'search',
+                    pageBuilder: (context, state) => CustomTransitionPage<void>(
+                      key: state.pageKey,
+                      child: const SearchOverlayScreen(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                            const begin = Offset(0.0, -1.0);
+                            const end = Offset.zero;
+                            const curve = Curves.easeInOut;
+                            var tween = Tween(
+                              begin: begin,
+                              end: end,
+                            ).chain(CurveTween(curve: curve));
+                            return SlideTransition(
+                              position: animation.drive(tween),
+                              child: child,
+                            );
+                          },
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'product/:productId',
+                    builder: (context, state) => ProductDetailScreen(
+                      productId: state.pathParameters['productId']!,
+                    ),
+                  ),
+                  GoRoute(
+                    path: 'cart',
+                    builder: (context, state) => const CartScreen(),
+                  ),
+                ],
+              ),
+
+              // 3. Profile
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => const ProfileScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'farm-history',
+                    builder: (context, state) => const FarmHistoryScreen(),
+                  ),
+                  GoRoute(
+                    path: 'purchase-inputs',
+                    builder: (context, state) => const PurchaseInputsScreen(),
+                  ),
+                  GoRoute(
+                    path: 'register-plot',
+                    builder: (context, state) => const PlotRegistrationScreen(),
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: '/crop-registration/:plotId',
+                builder: (context, state) => CropFieldRegistrationScreen(
+                  plotId: state.pathParameters['plotId']!,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ],
+  );
+});
