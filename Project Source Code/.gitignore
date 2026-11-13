@@ -55,11 +55,5 @@ app.*.symbols
 app.*.map.json
 
 .venv/
-best_buyer_model_randomforest.joblib
 
 best_buyer_model_randomforest.joblib
-build/
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-android/.gradle/
